@@ -42,7 +42,7 @@ class HttpServer(
                             request?.let { nonNullRequest ->
                                 val response =
                                     HttpRequestHandler(nonNullRequest).processRequest()
-                                writeResponse(clientSocket, response)
+                                writeResponse(clientSocket, response.toJson())
                             }
                         }
                     }
@@ -57,7 +57,7 @@ class HttpServer(
         return bufferedReader.readLines()
     }
 
-    fun writeResponse(socket: Socket, response: String) {
+    suspend fun writeResponse(socket: Socket, response: String) = withContext(Dispatchers.IO) {
         socket.getOutputStream().write(response.toByteArray(Charsets.UTF_8))
     }
 }
