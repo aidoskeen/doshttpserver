@@ -6,20 +6,14 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 @Serializable
-data class CallLog(
-    val beginning: String,
-    val duration: String,
-    val number: String,
+data class ApiService(
     val name: String,
-    val timesQueried: String
+    val uri: String
 ) {
     fun toJsonObject(): JsonObject {
         return buildJsonObject {
-            put("beginning", beginning)
-            put("duration", duration)
-            put("number", number)
             put("name", name)
-            put("timesQueried", timesQueried)
+            put("uri", uri)
         }
     }
 }
