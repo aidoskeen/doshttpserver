@@ -5,11 +5,16 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import com.aidos.doshttpserver.server.HttpServer
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HttpServerService(): Service() {
+    @Inject
+    lateinit var httpServer: HttpServer
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e(this.javaClass.simpleName, "Started the HTTP service")
-        val httpServer = HttpServer(HTTP_SERVER_PORT)
 
         httpServer.start()
         return START_STICKY
@@ -19,7 +24,8 @@ class HttpServerService(): Service() {
         return null
     }
 
-    companion object {
-        private const val HTTP_SERVER_PORT = 8888
+    override fun onDestroy() {
+        super.onDestroy()
+        httpServer.finish()
     }
 }

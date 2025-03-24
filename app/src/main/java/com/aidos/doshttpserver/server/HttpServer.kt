@@ -22,9 +22,9 @@ import java.net.Socket
 import javax.inject.Inject
 
 class HttpServer @Inject constructor(
-    val port: Int,
     val callInfoRepository: CallInfoRepository
 ) {
+    private val port = 8888
     private val scope = CoroutineScope(Dispatchers.Default + Job())
     private var job: Job? = null
 
