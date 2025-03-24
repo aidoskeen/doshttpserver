@@ -4,6 +4,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.20"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.protobuf)
 }
 
 android {
@@ -81,4 +82,24 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    // datastore
+    implementation(libs.androidx.datastore)
+    implementation(libs.protobuf.javalite)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.24.0"
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                register("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }
