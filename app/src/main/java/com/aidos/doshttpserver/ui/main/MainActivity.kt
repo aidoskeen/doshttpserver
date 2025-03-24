@@ -8,6 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.aidos.doshttpserver.server.service.HttpServerService
 import com.aidos.doshttpserver.ui.theme.DosHttpServerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,15 +24,26 @@ class MainActivity : ComponentActivity() {
         setContent {
             DosHttpServerTheme {
                 val viewModel = hiltViewModel<MainViewModel>()
-                val viewState by viewModel.viewState.collectAsState()
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = Routes.Main.route) {
+                    composable(Routes.Main.route) {
+                        val viewState by viewModel.viewState.collectAsState()
+                        DosHttpServerScreen(
+                            serverAddress = viewState.serverAddress,
+                            isServerRunning = viewState.isServerRunning,
+                            onStartService = { startHttpServerService() },
+                            onStopService = { stopHttpServerService() },
+                            onNavigateToCallLogs = {
+                                navController.navigate(Routes.Calls.route)
+                            }
+                        )
+                    }
 
-                DosHttpServerScreen(
-                    serverAddress = viewState.serverAddress,
-                    isServerRunning = viewState.isServerRunning,
-                    onStartService = { startHttpServerService() },
-                    onStopService = { stopHttpServerService() },
-                    onNavigateToCallLogs = {}
-                )
+                    composable(Routes.Calls.route) {
+                        val callItems by viewModel.callItemsState.collectAsState()
+                        CallsScreen(callItems = callItems)
+                    }
+                }
             }
         }
     }
@@ -41,4 +55,9 @@ class MainActivity : ComponentActivity() {
     private fun startHttpServerService() {
         startService(Intent(this, HttpServerService::class.java))
     }
+}
+
+sealed class Routes(val route: String) {
+    data object Main : Routes("main")
+    data object Calls : Routes("calls")
 }
