@@ -11,7 +11,7 @@ data class CallLog(
     val duration: String,
     val number: String,
     val name: String,
-    val timesQueried: String
+    val timesQueried: Int
 ) {
     fun toJsonObject(): JsonObject {
         return buildJsonObject {

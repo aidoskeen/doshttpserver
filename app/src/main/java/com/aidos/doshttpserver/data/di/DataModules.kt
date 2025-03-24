@@ -43,7 +43,7 @@ abstract class DataSourceModule {
 
     @Singleton
     @Binds
-    abstract fun bindCallInfoDataSource(dataSource: DefaultCurrentCallDataSource): CurrentCallDataSource
+    abstract fun bindCurrentCallDataSource(dataSource: DefaultCurrentCallDataSource): CurrentCallDataSource
 }
 
 @Module

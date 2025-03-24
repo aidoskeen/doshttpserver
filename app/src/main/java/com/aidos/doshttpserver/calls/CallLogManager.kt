@@ -2,6 +2,7 @@ package com.aidos.doshttpserver.calls
 
 import android.content.Context
 import android.provider.CallLog
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -9,7 +10,11 @@ import kotlinx.coroutines.withContext
 class CallLogManager(private val appContext: Context) {
     suspend fun getAllCallLogs(): List<CallData>? = withContext(Dispatchers.IO) {
         val callUri = CallLog.Calls.CONTENT_URI
-        val cursor = appContext.contentResolver.query(callUri, null, null, null, null) ?: return@withContext null
+        val cursor = appContext.contentResolver.query(callUri, null, null, null, null)
+        if (cursor == null) {
+            Log.e("CallLogManager", "Cursor is null.")
+            return@withContext null
+        }
 
         return@withContext buildList {
             while (cursor.moveToNext()) {
