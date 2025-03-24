@@ -6,8 +6,9 @@ import com.aidos.doshttpserver.proto.CurrentCall
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream
+import javax.inject.Inject
 
-class CurrentCallSerializer: Serializer<CurrentCall> {
+class CurrentCallSerializer @Inject constructor(): Serializer<CurrentCall> {
     override val defaultValue: CurrentCall = CurrentCall.getDefaultInstance()
 
     override suspend fun readFrom(input: InputStream): CurrentCall =
