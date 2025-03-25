@@ -26,6 +26,7 @@ class HttpServerService(): Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.e(this.javaClass.simpleName, "HTTP service has stopped")
         httpServer.finish()
     }
 }
