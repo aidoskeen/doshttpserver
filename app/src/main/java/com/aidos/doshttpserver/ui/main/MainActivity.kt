@@ -1,5 +1,6 @@
 package com.aidos.doshttpserver.ui.main
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,10 +14,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aidos.doshttpserver.server.service.HttpServerService
 import com.aidos.doshttpserver.ui.theme.DosHttpServerTheme
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,6 +30,8 @@ class MainActivity : ComponentActivity() {
             DosHttpServerTheme {
                 val viewModel = hiltViewModel<MainViewModel>()
                 val navController = rememberNavController()
+                val permissionState = rememberPermissionState(permission = Manifest.permission.READ_CALL_LOG) { }
+
                 NavHost(navController = navController, startDestination = Routes.Main.route) {
                     composable(Routes.Main.route) {
                         val viewState by viewModel.viewState.collectAsState()
@@ -40,7 +47,11 @@ class MainActivity : ComponentActivity() {
                                 stopService(Intent(this@MainActivity, HttpServerService::class.java))
                                             },
                             onNavigateToCallLogs = {
-                                navController.navigate(Routes.Calls.route)
+                                if (permissionState.status.isGranted) {
+                                    navController.navigate(Routes.Calls.route)
+                                } else {
+                                    permissionState.launchPermissionRequest()
+                                }
                             }
                         )
                     }

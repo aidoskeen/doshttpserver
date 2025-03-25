@@ -88,6 +88,7 @@ dependencies {
     // datastore
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.javalite)
+    implementation(libs.accompanist.permissions)
 }
 
 protobuf {
