@@ -34,6 +34,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -88,7 +89,10 @@ dependencies {
     // datastore
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.javalite)
+
     implementation(libs.accompanist.permissions)
+
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
 
 protobuf {

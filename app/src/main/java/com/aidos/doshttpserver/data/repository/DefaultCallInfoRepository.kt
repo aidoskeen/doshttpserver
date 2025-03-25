@@ -26,7 +26,7 @@ class DefaultCallInfoRepository @Inject constructor(
                 callDate = it.callDate,
                 phNumber = it.phNumber,
                 callDuration = it.callDuration,
-                name = it.name,
+                name = it.name ?: it.phNumber,
                 timesQueried = timesQueried
             )
         }
