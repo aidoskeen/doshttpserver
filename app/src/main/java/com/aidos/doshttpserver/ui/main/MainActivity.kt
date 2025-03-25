@@ -31,8 +31,14 @@ class MainActivity : ComponentActivity() {
                         DosHttpServerScreen(
                             serverAddress = viewState.serverAddress,
                             isServerRunning = viewState.isServerRunning,
-                            onStartService = { startHttpServerService() },
-                            onStopService = { stopHttpServerService() },
+                            onStartService = {
+                                viewModel.setIsServerRunning(true)
+                                startService(Intent(this@MainActivity, HttpServerService::class.java))
+                            },
+                            onStopService = {
+                                viewModel.setIsServerRunning(false)
+                                stopService(Intent(this@MainActivity, HttpServerService::class.java))
+                                            },
                             onNavigateToCallLogs = {
                                 navController.navigate(Routes.Calls.route)
                             }
@@ -46,14 +52,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private fun stopHttpServerService() {
-        stopService(Intent(this, HttpServerService::class.java))
-    }
-
-    private fun startHttpServerService() {
-        startService(Intent(this, HttpServerService::class.java))
     }
 }
 

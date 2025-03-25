@@ -3,11 +3,13 @@ package com.aidos.doshttpserver.data.repository
 import com.aidos.doshttpserver.calls.CallLogManager
 import com.aidos.doshttpserver.data.CallLogData
 import com.aidos.doshttpserver.data.CallQueryInfo
-import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallDataSource
+import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
 import com.aidos.doshttpserver.data.datasource.CallInfoDataSource
+import com.aidos.doshttpserver.ui.main.viewstate.CallItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -33,6 +35,10 @@ class DefaultCallInfoRepository @Inject constructor(
     override suspend fun getCurrentCallFlow(): Flow<CurrentCallStatus> = currentCallDataSource.currentCall
 
     override suspend fun setCurrentCallData(currentCallStatus: CurrentCallStatus) = currentCallDataSource.setCurrentCall(currentCallStatus)
+    override fun getCallItemsFlow(): Flow<List<CallItem>> = flow {
+        val callItems = getAllCallLogData()?.map { CallItem(it.callDuration, it.name)}
+        callItems?.let { emit(it) }
+    }
 
     override suspend fun insert(callQueryInfo: CallQueryInfo) = withContext(Dispatchers.IO) {
         callInfoDataSource.insert(callQueryInfo)

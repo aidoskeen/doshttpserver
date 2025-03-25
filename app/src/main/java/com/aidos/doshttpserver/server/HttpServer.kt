@@ -43,7 +43,7 @@ class HttpServer @Inject constructor(
     suspend fun acceptNewConnection(serverSocket: ServerSocket) = withContext(Dispatchers.IO) {
         while (job?.isActive == true) {
             serverSocket.accept().use { socket ->
-                Log.e("HttpServer", "New connection ${socket.inetAddress}")
+                Log.d("HttpServer", "New connection ${socket.inetAddress}")
                 val incomingData = readIncomingData(socket)
                 val request = HttpRequest.parseFromString(incomingData)
                 request?.let { nonNullRequest ->

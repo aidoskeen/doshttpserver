@@ -3,6 +3,7 @@ package com.aidos.doshttpserver.data.repository
 import com.aidos.doshttpserver.data.CallLogData
 import com.aidos.doshttpserver.data.CallQueryInfo
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
+import com.aidos.doshttpserver.ui.main.viewstate.CallItem
 import kotlinx.coroutines.flow.Flow
 
 interface CallInfoRepository {
@@ -17,4 +18,6 @@ interface CallInfoRepository {
     suspend fun getCurrentCallFlow(): Flow<CurrentCallStatus>
 
     suspend fun setCurrentCallData(currentCallStatus: CurrentCallStatus)
+
+    fun getCallItemsFlow(): Flow<List<CallItem>>
 }

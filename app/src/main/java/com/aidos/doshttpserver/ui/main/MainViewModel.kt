@@ -1,18 +1,32 @@
 package com.aidos.doshttpserver.ui.main
 
 import androidx.lifecycle.ViewModel
-import com.aidos.doshttpserver.ui.main.viewstate.CallItem
+import androidx.lifecycle.viewModelScope
+import com.aidos.doshttpserver.data.repository.CallInfoRepository
 import com.aidos.doshttpserver.ui.main.viewstate.MainViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor(
+    val callInfoRepository: CallInfoRepository
+) : ViewModel() {
     private val _mainViewState = MutableStateFlow(MainViewState())
     val viewState = _mainViewState.asStateFlow()
 
-    private val _callItemsState = MutableStateFlow(listOf<CallItem>())
-    val callItemsState = _callItemsState.asStateFlow()
+    val callItemsState = callInfoRepository.getCallItemsFlow()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = listOf()
+        )
+
+    fun setIsServerRunning(isServerRunning: Boolean) {
+        _mainViewState.update { it.copy(isServerRunning = isServerRunning) }
+    }
 }
