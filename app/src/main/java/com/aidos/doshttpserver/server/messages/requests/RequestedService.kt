@@ -9,7 +9,7 @@ sealed class RequestedService {
 
     companion object {
         private const val STATUS_PATH = "/status"
-        private const val EMPTY = ""
+        private const val EMPTY = "/"
         private const val LOG_PATH = "/log"
 
         fun fromUri(uriString: String): RequestedService? {

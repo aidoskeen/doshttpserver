@@ -7,7 +7,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class Log(
+data class LogRequest(
     val calls: List<CallLog>
 ) : ServerResponse {
     override fun toJson(): String {

@@ -4,7 +4,7 @@ import com.aidos.doshttpserver.server.messages.responses.fieldtype.CallLog
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
 
-class LogTest {
+class LogRequestTest {
     @Test
     fun testLogToJsonConversion() {
         val calls = listOf(
@@ -25,7 +25,7 @@ class LogTest {
         )
 
 
-        val serializedLogJson = Log(calls).toJson()
+        val serializedLogJson = LogRequest(calls).toJson()
         val expectedLogJson = """
             [
                 {
