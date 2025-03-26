@@ -20,7 +20,7 @@ class DefaultCallInfoRepository @Inject constructor(
     // FIXME: Quick solution to store current call, but it should be stored in persistent store.
     private var currentCallStatus: CurrentCallStatus? = null
     override suspend fun getCallLogsWithTimesQueried(): List<CallLogDataWithTimesQueried>? {
-        val allCallLogs = callLogManager.getAllCallLogs()
+        val allCallLogs = callLogManager.getAllCallLogsFromFirstLaunch(appConfigDataSource.getFirstLaunchTime())
         allCallLogs?.let { updateTimesQueried(it) }
 
         return allCallLogs?.map {

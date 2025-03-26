@@ -15,6 +15,35 @@ import javax.inject.Inject
 class CallLogManager @Inject constructor(
     private val appContext: Context
 ) {
+    suspend fun getAllCallLogsFromFirstLaunch(firstLaunchTime: String): List<CallData>? = withContext(Dispatchers.IO) {
+        CallLog.Calls.DATE + ">= ?"
+        val callUri = CallLog.Calls.CONTENT_URI
+        val cursor = appContext.contentResolver.query(callUri, null,  CallLog.Calls.DATE + ">= ?", arrayOf(firstLaunchTime), null)
+        if (cursor == null) {
+            Log.e("CallLogManager", "Cursor is null.")
+            return@withContext null
+        }
+
+        return@withContext buildList {
+            while (cursor.moveToNext()) {
+                kotlin.runCatching {
+                    val callDate = cursor.getStringOrNull(cursor.getColumnIndexOrThrow(CallLog.Calls.DATE))
+                        ?.toLongOrNull()
+                        ?.millisToLocalDateString()
+
+                    val phNumber = cursor.getStringOrNull(cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER))
+                    val callDuration = cursor.getStringOrNull(cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION))
+                    val name = cursor.getStringOrNull(cursor.getColumnIndexOrThrow(CallLog.Calls.CACHED_NAME))
+                    Log.i("Calls", "callDate:$callDate phPhone:$phNumber callDuration:$callDuration Name:$name")
+                    if (callDate != null && phNumber != null && callDuration != null)
+                        add(CallData(callDate, phNumber, callDuration, name))
+                }
+            }
+
+            cursor.close()
+        }
+    }
+
     suspend fun getAllCallLogs(): List<CallData>? = withContext(Dispatchers.IO) {
         val callUri = CallLog.Calls.CONTENT_URI
         val cursor = appContext.contentResolver.query(callUri, null, null, null, null)
