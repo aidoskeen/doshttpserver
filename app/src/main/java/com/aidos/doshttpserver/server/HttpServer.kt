@@ -26,28 +26,30 @@ class HttpServer @Inject constructor(
     val appConfigRepository: AppConfigRepository
 ) {
     private val port = 8888
+
     private val scope = CoroutineScope(Dispatchers.Default + Job())
     private var job: Job? = null
-
+    var serverSocket: ServerSocket? = null
     fun start() {
         if (job != null) return
+        if (serverSocket != null) return
         job = scope.launch {
-            val serverSocket = ServerSocket()
-            if (serverSocket.isBound && !serverSocket.isClosed) return@launch
-            serverSocket.reuseAddress = true
-            serverSocket.bind(InetSocketAddress(port))
-            appConfigRepository.setServerAddress("127.0.0.1:$port")
             runCatching {
-                acceptNewConnectionAndProcess(serverSocket)
+                serverSocket = ServerSocket(port)
+                appConfigRepository.setServerAddress("127.0.0.1:$port")
+                acceptNewConnectionAndProcess(serverSocket!!)
             }.onFailure {
+                serverSocket?.close()
                 it.printStackTrace()
             }
         }
     }
 
     fun finish() {
+        runCatching { serverSocket?.close() }
         job?.run { if (isActive) cancel()  }
         job = null
+        serverSocket = null
     }
 
     suspend fun acceptNewConnectionAndProcess(serverSocket: ServerSocket) = withContext(Dispatchers.IO) {
