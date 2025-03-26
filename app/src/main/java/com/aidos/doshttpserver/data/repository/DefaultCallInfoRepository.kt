@@ -4,8 +4,8 @@ import com.aidos.doshttpserver.calls.CallData
 import com.aidos.doshttpserver.calls.CallLogManager
 import com.aidos.doshttpserver.data.CallLogDataWithTimesQueried
 import com.aidos.doshttpserver.data.CallWithTimesQueried
-import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallDataSource
-import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
+import com.aidos.doshttpserver.data.appconfigdatastore.AppConfigDataSource
+import com.aidos.doshttpserver.data.appconfigdatastore.CurrentCallStatus
 import com.aidos.doshttpserver.data.datasource.CallInfoDataSource
 import com.aidos.doshttpserver.ui.main.viewstate.CallItem
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class DefaultCallInfoRepository @Inject constructor(
     private val callInfoDataSource: CallInfoDataSource,
     private val callLogManager: CallLogManager,
-    private val currentCallDataSource: CurrentCallDataSource,
+    private val appConfigDataSource: AppConfigDataSource,
 ): CallInfoRepository {
     // FIXME: Quick solution to store current call, but it should be stored in persistent store.
     private var currentCallStatus: CurrentCallStatus? = null

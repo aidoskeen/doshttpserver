@@ -1,9 +1,8 @@
 package com.aidos.doshttpserver.data.repository
 
-import com.aidos.doshttpserver.calls.CallData
 import com.aidos.doshttpserver.data.CallLogDataWithTimesQueried
 import com.aidos.doshttpserver.data.CallWithTimesQueried
-import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
+import com.aidos.doshttpserver.data.appconfigdatastore.CurrentCallStatus
 import com.aidos.doshttpserver.ui.main.viewstate.CallItem
 import kotlinx.coroutines.flow.Flow
 

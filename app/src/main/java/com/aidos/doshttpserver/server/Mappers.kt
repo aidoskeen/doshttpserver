@@ -1,7 +1,7 @@
 package com.aidos.doshttpserver.server
 
 import com.aidos.doshttpserver.data.CallLogDataWithTimesQueried
-import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
+import com.aidos.doshttpserver.data.appconfigdatastore.CurrentCallStatus
 import com.aidos.doshttpserver.server.messages.responses.Status
 import com.aidos.doshttpserver.server.messages.responses.fieldtype.CallLog
 

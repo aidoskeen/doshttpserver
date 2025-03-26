@@ -8,7 +8,7 @@ import android.provider.ContactsContract
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.util.Log
-import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
+import com.aidos.doshttpserver.data.appconfigdatastore.CurrentCallStatus
 import com.aidos.doshttpserver.data.repository.CallInfoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

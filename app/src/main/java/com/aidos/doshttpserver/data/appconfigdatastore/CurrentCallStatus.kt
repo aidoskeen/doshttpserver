@@ -1,4 +1,4 @@
-package com.aidos.doshttpserver.data.currentcalldatastore
+package com.aidos.doshttpserver.data.appconfigdatastore
 
 data class CurrentCallStatus(
     val ongoing: Boolean,
