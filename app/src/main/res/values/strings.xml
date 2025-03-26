@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">DosHttpServer</string>
+    <string name="button_text_start">Start</string>
+    <string name="button_text_stop">Stop</string>
+    <string name="text_server_address">Server address</string>
+    <string name="text_server_is_running">Server is running…</string>
+    <string name="text_server_is_inactive">Server is inactive</string>
+    <string name="button_view_call_logs">View call logs</string>
+    <string name="title_calls">Calls</string>
 </resources>
