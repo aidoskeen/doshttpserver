@@ -22,6 +22,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _mainViewState = MutableStateFlow(MainViewState())
+    val viewState = _mainViewState.asStateFlow()
     val callItemsState = callInfoRepository.getCallItemsFlow()
         .stateIn(
             scope = viewModelScope,
@@ -31,8 +32,8 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            appConfigRepository.getConfigFlow().collect {
-                _mainViewState.update { it.copy(serverAddress = it.serverAddress) }
+            appConfigRepository.getConfigFlow().collect { config ->
+                _mainViewState.update { it.copy(serverAddress = config.serverAddress) }
             }
         }
     }

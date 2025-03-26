@@ -1,6 +1,7 @@
 package com.aidos.doshttpserver.server
 
 import android.util.Log
+import com.aidos.doshttpserver.data.repository.AppConfigRepository
 import com.aidos.doshttpserver.data.repository.CallInfoRepository
 import com.aidos.doshttpserver.server.messages.requests.RequestedService
 import com.aidos.doshttpserver.server.messages.responses.LogRequest
@@ -15,12 +16,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.net.InetSocketAddress
 import java.net.ServerSocket
 import java.net.Socket
 import javax.inject.Inject
 
 class HttpServer @Inject constructor(
-    val callInfoRepository: CallInfoRepository
+    val callInfoRepository: CallInfoRepository,
+    val appConfigRepository: AppConfigRepository
 ) {
     private val port = 8888
     private val scope = CoroutineScope(Dispatchers.Default + Job())
@@ -29,7 +32,11 @@ class HttpServer @Inject constructor(
     fun start() {
         if (job != null) return
         job = scope.launch {
-            val serverSocket = ServerSocket(port)
+            val serverSocket = ServerSocket()
+            if (serverSocket.isBound && !serverSocket.isClosed) return@launch
+            serverSocket.reuseAddress = true
+            serverSocket.bind(InetSocketAddress(port))
+            appConfigRepository.setServerAddress("127.0.0.1:$port")
             runCatching {
                 acceptNewConnectionAndProcess(serverSocket)
             }.onFailure {
