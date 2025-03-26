@@ -30,7 +30,11 @@ class HttpServer @Inject constructor(
         if (job != null) return
         job = scope.launch {
             val serverSocket = ServerSocket(port)
-            acceptNewConnection(serverSocket)
+            runCatching {
+                acceptNewConnectionAndProcess(serverSocket)
+            }.onFailure {
+                it.printStackTrace()
+            }
         }
     }
 
@@ -39,7 +43,7 @@ class HttpServer @Inject constructor(
         job = null
     }
 
-    suspend fun acceptNewConnection(serverSocket: ServerSocket) = withContext(Dispatchers.IO) {
+    suspend fun acceptNewConnectionAndProcess(serverSocket: ServerSocket) = withContext(Dispatchers.IO) {
         while (job?.isActive == true) {
             serverSocket.accept().use { socket ->
                 Log.d("HttpServer", "New connection ${socket.inetAddress}")

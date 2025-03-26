@@ -1,19 +1,14 @@
 package com.aidos.doshttpserver.data.repository
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import com.aidos.doshttpserver.calls.CallLogManager
 import com.aidos.doshttpserver.data.CallLogData
-import com.aidos.doshttpserver.data.CallQueryInfo
+import com.aidos.doshttpserver.data.CallWithTimesQueried
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallDataSource
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
 import com.aidos.doshttpserver.data.datasource.CallInfoDataSource
 import com.aidos.doshttpserver.ui.main.viewstate.CallItem
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DefaultCallInfoRepository @Inject constructor(
@@ -25,8 +20,16 @@ class DefaultCallInfoRepository @Inject constructor(
     private var currentCallStatus: CurrentCallStatus? = null
     override suspend fun getAllCallLogData(): List<CallLogData>? {
         return callLogManager.getAllCallLogs()?.map {
-            val timesQueried = getCallInfoForNumber(it.phNumber).timesQueried
-            insert(CallQueryInfo(it.phNumber, timesQueried + 1))
+            val timesQueried = getCallInfoForNumber(it.phNumber).run {
+                if (this == null) {
+                    insert(CallWithTimesQueried(it.phNumber, 0))
+                    0
+                } else {
+                    update(this)
+                    timesQueried
+                }
+            }
+
             CallLogData(
                 callDate = it.callDate,
                 phNumber = it.phNumber,
@@ -37,9 +40,9 @@ class DefaultCallInfoRepository @Inject constructor(
         }
     }
 
-    override suspend fun getCurrentCallStatus() = currentCallStatus
+    override fun getCurrentCallStatus() = currentCallStatus
 
-    override suspend fun setCurrentCallData(currentCallStatus: CurrentCallStatus) {
+    override fun setCurrentCallData(currentCallStatus: CurrentCallStatus) {
         this.currentCallStatus = currentCallStatus
     }
 
@@ -48,15 +51,12 @@ class DefaultCallInfoRepository @Inject constructor(
         callItems?.let { emit(it) }
     }
 
-    override suspend fun insert(callQueryInfo: CallQueryInfo) = withContext(Dispatchers.IO) {
-        callInfoDataSource.insert(callQueryInfo)
-    }
+    override suspend fun insert(callWithTimesQueried: CallWithTimesQueried) = callInfoDataSource.insert(callWithTimesQueried)
 
-    override suspend fun update(callQueryInfo: CallQueryInfo) = withContext(Dispatchers.IO) {
-        callInfoDataSource.update(callQueryInfo)
-    }
 
-    override suspend fun getCallInfoForNumber(phoneNumber: String): CallQueryInfo = withContext(Dispatchers.IO) {
-        callInfoDataSource.getCallInfoForNumber(phoneNumber)
-    }
+    override suspend fun update(callWithTimesQueried: CallWithTimesQueried) = callInfoDataSource.update(callWithTimesQueried)
+
+
+    override suspend fun getCallInfoForNumber(phoneNumber: String): CallWithTimesQueried? = callInfoDataSource.getCallInfoForNumber(phoneNumber)
+
 }

@@ -1,23 +1,23 @@
 package com.aidos.doshttpserver.data.repository
 
 import com.aidos.doshttpserver.data.CallLogData
-import com.aidos.doshttpserver.data.CallQueryInfo
+import com.aidos.doshttpserver.data.CallWithTimesQueried
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
 import com.aidos.doshttpserver.ui.main.viewstate.CallItem
 import kotlinx.coroutines.flow.Flow
 
 interface CallInfoRepository {
-    suspend fun insert(callQueryInfo: CallQueryInfo)
+    suspend fun insert(callWithTimesQueried: CallWithTimesQueried)
 
-    suspend fun update(callQueryInfo: CallQueryInfo)
+    suspend fun update(callWithTimesQueried: CallWithTimesQueried)
 
-    suspend fun getCallInfoForNumber(phoneNumber: String): CallQueryInfo
+    suspend fun getCallInfoForNumber(phoneNumber: String): CallWithTimesQueried?
 
     suspend fun getAllCallLogData(): List<CallLogData>?
 
-    suspend fun getCurrentCallStatus(): CurrentCallStatus?
+    fun getCurrentCallStatus(): CurrentCallStatus?
 
-    suspend fun setCurrentCallData(currentCallStatus: CurrentCallStatus)
+    fun setCurrentCallData(currentCallStatus: CurrentCallStatus)
 
     fun getCallItemsFlow(): Flow<List<CallItem>>
 }

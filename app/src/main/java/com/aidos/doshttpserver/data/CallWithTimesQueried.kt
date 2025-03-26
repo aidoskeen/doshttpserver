@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "call_info",
 )
-data class CallQueryInfo(
+data class CallWithTimesQueried(
     @PrimaryKey(autoGenerate = false)
     val phoneNumber: String,
     val timesQueried: Int

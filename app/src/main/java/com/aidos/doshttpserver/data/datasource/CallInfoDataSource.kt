@@ -1,14 +1,11 @@
 package com.aidos.doshttpserver.data.datasource
 
-import com.aidos.doshttpserver.data.CallQueryInfo
-import com.aidos.doshttpserver.data.room.CallQueryDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.aidos.doshttpserver.data.CallWithTimesQueried
 
 interface CallInfoDataSource {
-    suspend fun insert(callQueryInfo: CallQueryInfo)
+    suspend fun insert(callWithTimesQueried: CallWithTimesQueried)
 
-    suspend fun update(callQueryInfo: CallQueryInfo)
+    suspend fun update(callWithTimesQueried: CallWithTimesQueried)
 
-    suspend fun getCallInfoForNumber(phoneNumber: String): CallQueryInfo
+    suspend fun getCallInfoForNumber(phoneNumber: String): CallWithTimesQueried?
 }
