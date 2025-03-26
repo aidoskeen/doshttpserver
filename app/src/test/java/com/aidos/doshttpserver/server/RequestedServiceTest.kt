@@ -8,7 +8,7 @@ class RequestedServiceTest {
     @Test
     fun testRequestedServiceFromUri() {
         val statusStringUri = "http://localhost:1234/status"
-        val rootStringUri = "http://localhost:1234"
+        val rootStringUri = "http://localhost:1234/"
         val logStringUri = "http://localhost:1234/log"
         val statusRequestedService = RequestedService.fromUri(statusStringUri)
         val rootRequestedService = RequestedService.fromUri(rootStringUri)

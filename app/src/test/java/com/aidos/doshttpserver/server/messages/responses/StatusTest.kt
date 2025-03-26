@@ -10,7 +10,7 @@ class StatusTest {
         val serializedStatusJson = status.toJson()
         val expectedStatusJson = """
             {
-                "ongoing": truex,
+                "ongoing": true,
                 "number": "+12025550108",
                 "name": "John Doe"
             }
