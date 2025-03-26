@@ -1,6 +1,7 @@
 package com.aidos.doshttpserver.data.repository
 
-import com.aidos.doshttpserver.data.CallLogData
+import com.aidos.doshttpserver.calls.CallData
+import com.aidos.doshttpserver.data.CallLogDataWithTimesQueried
 import com.aidos.doshttpserver.data.CallWithTimesQueried
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
 import com.aidos.doshttpserver.ui.main.viewstate.CallItem
@@ -13,7 +14,7 @@ interface CallInfoRepository {
 
     suspend fun getCallInfoForNumber(phoneNumber: String): CallWithTimesQueried?
 
-    suspend fun getAllCallLogData(): List<CallLogData>?
+    suspend fun getCallLogsWithTimesQueried(): List<CallLogDataWithTimesQueried>?
 
     fun getCurrentCallStatus(): CurrentCallStatus?
 

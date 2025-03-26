@@ -1,12 +1,11 @@
 package com.aidos.doshttpserver.server
 
-import com.aidos.doshttpserver.data.CallLogData
+import com.aidos.doshttpserver.data.CallLogDataWithTimesQueried
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
-import com.aidos.doshttpserver.proto.CurrentCall
 import com.aidos.doshttpserver.server.messages.responses.Status
 import com.aidos.doshttpserver.server.messages.responses.fieldtype.CallLog
 
-fun CallLogData.toCallLog(): CallLog {
+fun CallLogDataWithTimesQueried.toResponseCallLog(): CallLog {
     return CallLog(
         beginning = this.callDate,
         duration = this.callDuration,

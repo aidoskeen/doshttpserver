@@ -84,8 +84,8 @@ class HttpServer @Inject constructor(
     }
 
     private suspend fun prepareLogResponse(): LogRequest? {
-        val calls = callInfoRepository.getAllCallLogData()?.map {
-            it.toCallLog()
+        val calls = callInfoRepository.getCallLogsWithTimesQueried()?.map {
+            it.toResponseCallLog()
         }
 
         return calls?.let {
@@ -103,7 +103,7 @@ class HttpServer @Inject constructor(
         )
     }
 
-    private suspend fun prepareStatusResponse(): Status? {
+    private fun prepareStatusResponse(): Status? {
         val currentCall = callInfoRepository.getCurrentCallStatus()
         return currentCall?.toStatus()
     }

@@ -1,6 +1,6 @@
 package com.aidos.doshttpserver.data
 
-data class CallLogData(
+data class CallLogDataWithTimesQueried(
     val callDate: String,
     val phNumber: String,
     val callDuration: String,

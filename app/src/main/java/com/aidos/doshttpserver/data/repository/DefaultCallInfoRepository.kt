@@ -1,7 +1,8 @@
 package com.aidos.doshttpserver.data.repository
 
+import com.aidos.doshttpserver.calls.CallData
 import com.aidos.doshttpserver.calls.CallLogManager
-import com.aidos.doshttpserver.data.CallLogData
+import com.aidos.doshttpserver.data.CallLogDataWithTimesQueried
 import com.aidos.doshttpserver.data.CallWithTimesQueried
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallDataSource
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
@@ -18,25 +19,31 @@ class DefaultCallInfoRepository @Inject constructor(
 ): CallInfoRepository {
     // FIXME: Quick solution to store current call, but it should be stored in persistent store.
     private var currentCallStatus: CurrentCallStatus? = null
-    override suspend fun getAllCallLogData(): List<CallLogData>? {
-        return callLogManager.getAllCallLogs()?.map {
-            val timesQueried = getCallInfoForNumber(it.phNumber).run {
-                if (this == null) {
-                    insert(CallWithTimesQueried(it.phNumber, 0))
-                    0
-                } else {
-                    update(this)
-                    timesQueried
-                }
-            }
+    override suspend fun getCallLogsWithTimesQueried(): List<CallLogDataWithTimesQueried>? {
+        val allCallLogs = callLogManager.getAllCallLogs()
+        allCallLogs?.let { updateTimesQueried(it) }
 
-            CallLogData(
+        return allCallLogs?.map {
+            val timesQueried = getCallInfoForNumber(it.phNumber)?.timesQueried ?: 0
+            CallLogDataWithTimesQueried(
                 callDate = it.callDate,
                 phNumber = it.phNumber,
                 callDuration = it.callDuration,
                 name = it.name ?: it.phNumber,
                 timesQueried = timesQueried
             )
+        }
+    }
+
+    private suspend fun updateTimesQueried(allCallLogs: List<CallData>) {
+        allCallLogs.distinctBy { it.phNumber }.forEach {
+            getCallInfoForNumber(it.phNumber).run {
+                if (this == null) {
+                    insert(CallWithTimesQueried(it.phNumber, 0))
+                } else {
+                    update(this.copy(timesQueried = timesQueried + 1))
+                }
+            }
         }
     }
 
@@ -47,7 +54,7 @@ class DefaultCallInfoRepository @Inject constructor(
     }
 
     override fun getCallItemsFlow(): Flow<List<CallItem>> = flow {
-        val callItems = getAllCallLogData()?.map { CallItem(it.callDuration, it.name)}
+        val callItems = callLogManager.getAllCallLogs()?.map { CallItem(it.callDuration, it.name ?: it.phNumber)}
         callItems?.let { emit(it) }
     }
 

@@ -67,32 +67,36 @@ class CallStateReceiver: BroadcastReceiver() {
     }
 
     private suspend fun getContactName(number: String, context: Context): String = withContext(Dispatchers.IO) {
-        val projection = arrayOf(
-            ContactsContract.PhoneLookup.DISPLAY_NAME,
-            ContactsContract.PhoneLookup.NUMBER,
-            ContactsContract.PhoneLookup.HAS_PHONE_NUMBER
-        )
-
-        val contactUri = Uri.withAppendedPath(
-            ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
-            Uri.encode(number)
-        )
-
-        val cursor = context.contentResolver.query(
-            contactUri,
-            projection, null, null, null
-        )
-
-        if (cursor == null) return@withContext ""
-
-        val contactName = if (cursor.moveToFirst())
-            cursor.getString(
-                cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME)
+        return@withContext try {
+            val projection = arrayOf(
+                ContactsContract.PhoneLookup.DISPLAY_NAME,
+                ContactsContract.PhoneLookup.NUMBER,
+                ContactsContract.PhoneLookup.HAS_PHONE_NUMBER
             )
-        else
-            null
 
-        cursor.close()
-        return@withContext contactName ?: ""
+            val contactUri = Uri.withAppendedPath(
+                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(number)
+            )
+
+            val cursor = context.contentResolver.query(
+                contactUri,
+                projection, null, null, null
+            )
+
+            if (cursor == null) return@withContext ""
+
+            val contactName = if (cursor.moveToFirst())
+                cursor.getString(
+                    cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME)
+                )
+            else
+                null
+
+            cursor.close()
+            return@withContext contactName ?: ""
+        } catch (e: Exception) {
+            ""
+        }
     }
 }
