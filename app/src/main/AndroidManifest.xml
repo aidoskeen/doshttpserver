@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <application
         android:name=".DosHttpServerApp"
         android:allowBackup="true"
@@ -29,6 +30,12 @@
             </intent-filter>
         </activity>
         <service android:name=".server.service.HttpServerService" />
+        <receiver android:name=".calls.CallStateReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

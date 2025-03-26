@@ -15,7 +15,7 @@ interface CallInfoRepository {
 
     suspend fun getAllCallLogData(): List<CallLogData>?
 
-    suspend fun getCurrentCallFlow(): Flow<CurrentCallStatus>
+    suspend fun getCurrentCallStatus(): CurrentCallStatus?
 
     suspend fun setCurrentCallData(currentCallStatus: CurrentCallStatus)
 

@@ -11,7 +11,6 @@ import com.aidos.doshttpserver.server.messages.responses.fieldtype.ApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -101,7 +100,7 @@ class HttpServer @Inject constructor(
     }
 
     private suspend fun prepareStatusResponse(): Status? {
-        val currentCall = callInfoRepository.getCurrentCallFlow().firstOrNull()
+        val currentCall = callInfoRepository.getCurrentCallStatus()
         return currentCall?.toStatus()
     }
 }

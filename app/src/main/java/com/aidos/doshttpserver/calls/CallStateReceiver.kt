@@ -10,6 +10,7 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import com.aidos.doshttpserver.data.currentcalldatastore.CurrentCallStatus
 import com.aidos.doshttpserver.data.repository.CallInfoRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,11 +18,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@AndroidEntryPoint
+class CallStateReceiver: BroadcastReceiver() {
 
-class CallStateReceiver @Inject constructor(
-    val callInfoRepository: CallInfoRepository
-): BroadcastReceiver() {
-
+    @Inject
+    lateinit var callInfoRepository: CallInfoRepository
     private val coroutineScope = CoroutineScope(Dispatchers.IO + Job())
 
     override fun onReceive(context: Context?, intent: Intent?) {
