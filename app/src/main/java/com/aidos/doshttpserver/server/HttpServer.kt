@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.net.InetSocketAddress
+import java.net.NetworkInterface
 import java.net.ServerSocket
 import java.net.Socket
 import javax.inject.Inject
@@ -36,7 +36,12 @@ class HttpServer @Inject constructor(
         job = scope.launch {
             runCatching {
                 serverSocket = ServerSocket(port)
-                appConfigRepository.setServerAddress("127.0.0.1:$port")
+                NetworkInterface.getNetworkInterfaces()
+                    .toList()
+                    .flatMap { it.inetAddresses.toList() }
+                    .find { it.isSiteLocalAddress }
+                    ?.let { address -> appConfigRepository.setServerAddress("$address:$port") }
+
                 acceptNewConnectionAndProcess(serverSocket!!)
             }.onFailure {
                 serverSocket?.close()
