@@ -12,7 +12,7 @@ Supported Android versions: Android 6.0+ .
 
 
 ```
-Copyright 2024 
+Copyright 2025 
 
 Developed by Aidos Alimkhan
 ```
