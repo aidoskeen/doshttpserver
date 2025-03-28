@@ -22,8 +22,8 @@ import java.net.Socket
 import javax.inject.Inject
 
 class HttpServer @Inject constructor(
-    val callInfoRepository: CallInfoRepository,
-    val appConfigRepository: AppConfigRepository
+    private val callInfoRepository: CallInfoRepository,
+    private val appConfigRepository: AppConfigRepository
 ) {
     private val port = 8888
 
@@ -72,13 +72,13 @@ class HttpServer @Inject constructor(
         }
     }
 
-    suspend fun readIncomingData(socket: Socket): String = withContext(Dispatchers.IO) {
+    private suspend fun readIncomingData(socket: Socket): String = withContext(Dispatchers.IO) {
         val inputStreamReader = InputStreamReader(socket.getInputStream())
         val bufferedReader = BufferedReader(inputStreamReader)
         return@withContext bufferedReader.readLine()
     }
 
-    suspend fun processRequest(httpRequest: HttpRequest): ServerResponse? {
+    private suspend fun processRequest(httpRequest: HttpRequest): ServerResponse? {
         return when (httpRequest.method) {
             HttpRequestMethod.GET -> handleGetRequest(httpRequest)
             HttpRequestMethod.PUT -> TODO()

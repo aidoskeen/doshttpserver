@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DefaultAppConfigRepository @Inject constructor(
-    val appConfigDataSource: AppConfigDataSource
+    private val appConfigDataSource: AppConfigDataSource
 ): AppConfigRepository {
     override suspend fun getConfigFlow(): Flow<AppConfiguration> = appConfigDataSource.config
 

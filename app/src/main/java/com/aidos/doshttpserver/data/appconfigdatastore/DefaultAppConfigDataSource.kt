@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 
 class DefaultAppConfigDataSource @Inject constructor(
-    val appConfigDataStore: DataStore<AppConfig>
+    private val appConfigDataStore: DataStore<AppConfig>
 ): AppConfigDataSource {
     override val config = appConfigDataStore.data.map { AppConfiguration(it.firstLaunchTime, it.serverAddress) }
     override suspend fun setFirstLaunchTime(time: String) {
